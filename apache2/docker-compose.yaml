@@ -1,0 +1,15 @@
+version: "3.7"
+services:
+  web:
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /Users/kastras/Documents/test/admin/conf-ssl.d:/etc/httpd/conf-ssl.d
+      - /Users/kastras/Documents/test/admin/conf.d:/etc/httpd/conf.d
+      - /Users/kastras/Documents/test/admin/certificados:/etc/letsencrypt
+      - /Users/kastras/Documents/test/admin/vhosts:/var/www/vhosts
+      - /Users/kastras/Documents/test/admin/logs:/var/log/httpd
+
+    restart: always
