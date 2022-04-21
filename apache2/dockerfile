@@ -6,7 +6,7 @@ RUN yum install -y certbot mod_ssl
 RUN easy_install-3.6 supervisor
 RUN yum update -y
 RUN echo "LISTEN 443" >> /etc/httpd/conf/httpd.conf && echo "IncludeOptional conf-ssl.d/*.conf" >> /etc/httpd/conf/httpd.conf
-RUN echo "2 * * * * /usr/bin/python3 /root/check.py" >> /var/spool/cron/root
+RUN echo "30 2 * * * /usr/bin/python3 /root/check.py" >> /var/spool/cron/root
 RUN chmod 600 /var/spool/cron/root
 COPY config/supervisord.conf /usr/local/supervisord.conf
 COPY python_check/check.py /root/check.py
