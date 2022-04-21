@@ -3,7 +3,6 @@ from urllib.request import ssl, socket
 import datetime, smtplib
 import os 
 import time
-hostname = 'casa.timofijo.com'
 port = '443'
 context = ssl.create_default_context()
 renovar = False
@@ -31,15 +30,13 @@ def renovarDominio(dominio):
     return os.popen(comando).read()
 
 time.sleep(30)
-while True:
-    dominios = getDomains()
-    dominiosArray = dominios.split(" ")
-    for dominio in dominiosArray:
-        renovar = False
-        renovar = certCheck(dominio)
-        if renovar:
-            renovarDominio(dominio)
-        else:
-            time.sleep(5)
 
-    time.sleep(1440)
+dominios = getDomains()
+dominiosArray = dominios.split(" ")
+for dominio in dominiosArray:
+    renovar = False
+    renovar = certCheck(dominio)
+    if renovar:
+        renovarDominio(dominio)
+    else:
+        time.sleep(5)
