@@ -6,6 +6,7 @@ import time
 port = '443'
 context = ssl.create_default_context()
 renovar = False
+reiniciar = False
 
 def certCheck(hostname):
     try: 
@@ -32,11 +33,15 @@ def renovarDominio(dominio):
 time.sleep(30)
 
 dominios = getDomains()
-dominiosArray = dominios.split(" ")
+dominiosArray = dominios.split("\n")
 for dominio in dominiosArray:
     renovar = False
     renovar = certCheck(dominio)
     if renovar:
         renovarDominio(dominio)
+        reiniciar = True
     else:
         time.sleep(5)
+
+if reiniciar:
+    os.kill(1,9)
