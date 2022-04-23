@@ -38,10 +38,12 @@ for dominio in dominiosArray:
     renovar = False
     renovar = certCheck(dominio)
     if renovar:
+        print(f"Renovando dominio {dominio}")
         renovarDominio(dominio)
         reiniciar = True
     else:
         time.sleep(5)
 
 if reiniciar:
-    os.kill(1,9)
+    print("Reiniciamos el servicio de httpd")
+    os.system("ps -C httpd -o pid=|xargs kill -9")

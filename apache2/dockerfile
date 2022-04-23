@@ -1,4 +1,5 @@
 FROM centos:latest
+LABEL org.opencontainers.image.authors="kastras+docker@gmail.com"
 RUN sed -i -e "s|mirrorlist=|#mirrorlist=|g" /etc/yum.repos.d/CentOS-*
 RUN sed -i -e "s|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g" /etc/yum.repos.d/CentOS-*
 RUN yum install -y httpd epel-release python3-setuptools crontabs
