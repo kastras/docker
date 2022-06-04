@@ -16,7 +16,16 @@ services:
       docker_com_internal:
         ipv4_address: 10.0.0.2
     restart: always
-
+    logging:
+      driver: loki
+      options:
+        loki-url: http://192.168.0.18:3100/loki/api/v1/push
+        loki-pipeline-stages: |
+          - regex:
+              expression: '(level|lvl|severity)=(?P<level>\w+)'
+          - labels:
+              level:
+              
   wiki:
     image: requarks/wiki:2
     container_name: wiki
