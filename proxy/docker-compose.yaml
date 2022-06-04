@@ -1,0 +1,64 @@
+version: "3.7"
+services:
+  web:
+    image: kastras/apacheproxy:main
+    container_name: httpd
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /home/admin/conf-ssl.d:/etc/httpd/conf-ssl.d
+      - /home/admin/conf.d:/etc/httpd/conf.d
+      - /home/admin/certificados:/etc/letsencrypt
+      - /home/admin/vhosts:/var/www/vhosts
+      - /home/admin/logs:/var/log/httpd
+    networks:
+      docker_com_internal:
+        ipv4_address: 10.0.0.2
+    restart: always
+
+  wiki:
+    image: requarks/wiki:2
+    container_name: wiki
+    ports:
+      - "8080:3000"
+    env_file:
+      - wiki.env
+    networks:
+      docker_com_internal:
+        ipv4_address: 10.0.0.4
+    restart: always
+
+  etherpad:
+    image: fuerst/etherpad-docker
+    container_name: etherpad
+    ports:
+      - "9001:9001"
+    volumes:
+      - /opt/etherpad-lite/var:/opt/etherpad-lite/var
+      - /opt/etherpad-lite/node_modules:/opt/etherpad-lite/node_modules
+    env_file:
+      - etherpad.env
+    networks:
+      docker_com_internal:
+        ipv4_address: 10.0.0.3
+    restart: always
+
+  keycloak:
+    image: jboss/keycloak
+    ports:
+      - "8180:8080"
+      - "8443:8443"
+    restart: always
+    env_file:
+      - keycloak.env
+    networks:
+        docker_com_internal:
+          ipv4_address: 10.0.0.20
+
+networks:
+  docker_com_internal:
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.0.0/24

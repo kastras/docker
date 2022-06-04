@@ -1,0 +1,142 @@
+version: '3.3'
+services:
+    transmission:
+      image: linuxserver/transmission
+      volumes:
+        - transmission_config:/config
+        - /plex:/downloads
+        - /plex/temporales:/watch
+      restart: always
+      environment:
+        PUID: 0
+        PGID: 0
+        TZ: Europe/London
+        TRANSMISSION_WEB_HOME: /combustion-release/
+      ports:
+        - "9091:9091"
+      networks:
+        internal:
+          ipv4_address: 172.20.0.2
+
+    sonarr:
+      image: linuxserver/sonarr
+      volumes:
+        - sonarr_config:/config
+        - /plex/Series:/tv
+        - /plex:/downloads
+      environment: 
+        PGID: 0
+        PUID: 0
+        TZ: Europe/London
+      ports: 
+        - "8989:8989"
+      restart: always
+      networks:
+        internal:
+          ipv4_address: 172.20.0.3
+
+    tautulli:
+      image: linuxserver/tautulli
+      volumes: 
+        - tautulli_config:/config
+        - plex_logs:/logs
+      restart: unless-stopped
+      ports: 
+        - "8181:8181"
+      networks:
+        internal:
+          ipv4_address: 172.20.0.4
+
+    radar:
+      image: linuxserver/radarr
+      volumes: 
+        - radarr_config:/config
+        - radarr_movies:/movies
+        - radarr_downloads:/downloads
+      restart: unless-stopped
+      environment: 
+        PUID: 0
+        PGUID: 0
+        TZ: Europe/London
+        UMASK_SET: 022
+      ports: 
+        - "7878:7878"
+      networks:
+        internal:
+          ipv4_address: 172.20.0.5
+
+    jackett:
+      image: linuxserver/jackett
+      volumes: 
+        - jackett_config:/config
+        - jackett_downnloads:/downloads
+      restart: always
+      environment: 
+        PGUID: 1001
+        PUID: 1001
+        TZ: Europe/London
+      ports: 
+        - "9117:9117"
+      networks:
+        internal:
+          ipv4_address: 172.20.0.6
+
+    plex:
+      image: ghcr.io/linuxserver/plex
+      container_name: plex
+      environment:
+        - PUID=0
+        - PGID=0
+        - VERSION=docker
+      ports:
+        - "32400:32400"
+      restart: always
+      volumes:
+        - plex_config:/config
+        - /plex/Series:/tv
+        - /plex/Peliculas:/movies
+      networks:
+        internal:
+          ipv4_address: 172.20.0.7
+
+    qbittorrent:
+      image: ghcr.io/linuxserver/qbittorrent
+      container_name: qbittorrent
+      environment:
+        - PUID=0
+        - PGID=0
+        - TZ=Europe/London
+        - WEBUI_PORT=3080
+      volumes:
+        - qbittorrent_config:/config
+        - /plex/:/downloads
+      ports:
+        - 6881:6881
+        - 6881:6881/udp
+        - 3080:3080
+      restart: unless-stopped
+      networks:
+        internal:
+          ipv4_address: 172.20.0.8
+
+
+networks:
+  internal:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+
+volumes: 
+  qbittorrent_config:
+  jackett_config:
+  jackett_downnloads:
+  radarr_config:
+  sonarr_config:
+  radarr_movies:
+  radarr_downloads:
+  plex_logs:
+  tautulli_config:
+  jackett_config:
+  jackett_downloads:
+  transmission_config:
+  plex_config:
