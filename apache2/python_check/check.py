@@ -37,7 +37,7 @@ dominiosArray = dominios.split("\n")
 for dominio in dominiosArray:
     renovar = False
     renovar = certCheck(dominio)
-    if renovar:
+    if renovar and dominio != "":
         renovarDominio(dominio)
         reiniciar = True
     else:
